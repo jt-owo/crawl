@@ -25,6 +25,8 @@ typedef struct Level
 {
     int                 depth;
     Tile                tiles[MAP_W][MAP_H];
+    Point               stairsUp;
+    Point               stairsDown;
     struct Level*       prev;
     struct Level*       next;
 } Level;

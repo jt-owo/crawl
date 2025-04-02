@@ -12,7 +12,7 @@ int main(int argc, char** argv)
     gui_init();
 
     Game* g = game_new();
-    game_render(g);
+    gui_draw(g);
     game_run(g);
     game_free(g);
     

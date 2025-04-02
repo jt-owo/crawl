@@ -26,6 +26,11 @@ Level* level_new(Level* parent)
     r.h = (rand() % 5) + 5;
     r.x = rand() % (MAP_W - r.w - 2) + 1;
     r.y = rand() % (MAP_H - r.h - 2) + 1;
+
+    l->stairsUp.x = r.x + rand() % (r.w - 2) + 1;
+    l->stairsUp.y = r.y + rand() % (r.h - 2) + 1;
+    l->stairsDown.x = -1;
+
     level_add_room(l, &r);
 
     return l;
@@ -49,6 +54,7 @@ void level_add_room(Level* l, Rect* r)
     // Connectors
     Corridor c = {0};
     Rect rChild = {0};
+    int exits = 0;
     for (int i = 0; i < CORRIDOR_TRIES; ++i)
     {
         c = find_room_corridor_child(r);
@@ -59,10 +65,16 @@ void level_add_room(Level* l, Rect* r)
         if (!room_fits(l, &rChild))
             continue;
 
+        exits++;
         level_add_corridor(l, &c);
         level_add_room(l, &rChild);
     }
     
+    if (l->stairsDown.x == -1 && exits == 0)
+    {
+        l->stairsDown.x = r->x + rand() % r->w;
+        l->stairsDown.y = r->y + rand() % r->h;
+    }
 }
 
 void level_add_corridor(Level* l, Corridor* c)

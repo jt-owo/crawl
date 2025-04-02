@@ -1,4 +1,5 @@
 #include "cam.h"
+#include "gui.h"
 #include "calc.h"
 #include <ncurses.h>
 
@@ -24,5 +25,5 @@ void cam_move(Game* g, enum Direction d)
             g_cam.x -= stepX;
     }
 
-    game_render(g);
+    gui_draw(g);
 }

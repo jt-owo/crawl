@@ -23,8 +23,6 @@ Game* game_new(void);
 void game_free(Game* g);
 /* Main game loop. */
 void game_run(Game* g);
-/* Renders the game. */
-void game_render(Game* g);
 /* Renders the game info. */
 void game_render_info(Game* g);
 /* Updates the game state. */
