@@ -12,6 +12,6 @@ clean:
 	-rm -f $(OBJECTS) crawl
 
 install: crawl
-	cp -v crawl /usr/bin/
+	sudo cp -v crawl /usr/bin/
 
 .PHONY: clean

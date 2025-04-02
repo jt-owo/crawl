@@ -11,6 +11,13 @@ Game* game_new(void)
     return g;
 }
 
+void game_free(Game* g)
+{
+    if (g->levels)
+        level_free(g->levels);
+    free(g);
+}
+
 void game_run(Game* g)
 {
     int key;
@@ -46,7 +53,7 @@ void game_render(Game* g)
 
             Tile t = g->current->tiles[x2][y2];
             if (x2 >= MAP_W || x2 < 0 || y2 >= MAP_H || y2 < 0)
-                c = ' ';
+                c = EMPTY_CHAR;
             else
                 c = t.c;
 
@@ -115,6 +122,7 @@ void handle_input(Game* g, char key)
             else if (key == 'a')
                 cam_move(g, WEST);
             break;
-        default: break;
+        case MAP_INFO:
+            break;
     }
 }
