@@ -9,6 +9,7 @@ Game* game_new(void)
     Game* g = malloc(sizeof(Game));
     g->levels = g->current = level_new(NULL);
     g->state = MAP_WALK;
+    g->running = TRUE;
     return g;
 }
 
@@ -24,10 +25,17 @@ void game_run(Game* g)
     int key;
     enum GameState state = g->state;
 
-    while (1)
+    while (g->running)
     {
         key = getch();
 
+        if (key == 'q')
+        {
+            g->running = !gui_confirm("Do you want to quit?", 'y', 'n');
+            if (g->running)
+                gui_redraw(g);
+        }
+            
         if (key == 'z')
             state = MAP_WALK;
         else if (key == 'm')
@@ -48,6 +56,9 @@ void game_render_info(Game* g)
 
 void game_state(Game* g, enum GameState state)
 {
+    if (g->state == state)
+        return;
+
     g->state = state;
 
     switch (state)

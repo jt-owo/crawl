@@ -5,9 +5,9 @@
 #include "calc.h"
 
 /* Width of a level. */
-#define MAP_W   200
+#define MAP_W   320
 /* Height of a level. */
-#define MAP_H   50
+#define MAP_H   100
 
 #define EMPTY_CHAR          ' '
 #define FLOOR_CHAR          '.'

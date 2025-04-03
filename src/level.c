@@ -72,8 +72,8 @@ void level_add_room(Level* l, Rect* r)
     
     if (l->stairsDown.x == -1 && exits == 0)
     {
-        l->stairsDown.x = r->x + rand() % r->w;
-        l->stairsDown.y = r->y + rand() % r->h;
+        l->stairsDown.x = r->x + rand() % (r->w - 2) + 1;
+        l->stairsDown.y = r->y + rand() % (r->h - 2) + 1;
     }
 }
 

@@ -14,6 +14,7 @@ typedef struct Game
     enum GameState      state;
     Level*              levels;
     Level*              current;
+    bool                running;
     int                 floor;
 } Game;
 

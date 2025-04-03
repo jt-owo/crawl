@@ -4,6 +4,9 @@
 #define NOISE_CHAR '#'
 
 #define MAX(x, y) ((x > y) ? x : y)
+#define MIN(x, y) ((x < y) ? x : y)
+#define LENGTH(X) (sizeof X / sizeof X[0])
+#define ABS(x) ((x < 0) ? -x : x)
 
 enum Direction {
     NORTH,
