@@ -8,12 +8,12 @@ Game* game_new(void)
 {
     Game* g = malloc(sizeof(Game));
     g->levels = g->current = level_new(NULL);
-    g->player = player_new();
+    g->player = player_new(KNIGHT);
     g->player->base->sight = 5;
     player_move(g->player, g->current->stairsUp);
     level_fov(g->current, g->player->base, g->player->base->sight);
     cam_center(g->player->base->pos);
-    gui_status("HP: 100/100 MP: 100/100 XP:0/1000");
+    player_status(g->player);
     
     g->state = MAP_WALK;
     g->running = TRUE;

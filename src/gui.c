@@ -23,8 +23,11 @@ void gui_init(void)
         exit(EXIT_FAILURE);
     }
 
-    init_pair(1, COLOR_WHITE, COLOR_BLACK);
-    init_pair(2, COLOR_RED, COLOR_BLACK);
+    init_pair(WHITE, COLOR_WHITE, COLOR_BLACK);
+    init_pair(RED, COLOR_RED, COLOR_BLACK);
+    init_pair(GREEN, COLOR_GREEN, COLOR_BLACK);
+    init_pair(BLUE, COLOR_BLUE, COLOR_BLACK);
+    init_pair(YELLOW, COLOR_YELLOW, COLOR_BLACK);
 }
 
 void gui_draw(Game* g)
@@ -50,20 +53,22 @@ void gui_draw(Game* g)
                 c = t.c;
 
             if (c == CLOSED_DOOR_CHAR || c == OPEN_DOOR_CHAR)
-                attron(COLOR_PAIR(2));
+            {
+                attron(COLOR_PAIR(RED));
+                addch(c);
+                attroff(COLOR_PAIR(RED));
+            }
             else
-                attron(COLOR_PAIR(1));
-
-            addch(c);
+            {
+                addch(c);
+            }
         }
     }
 
     // Special objects
-    attron(COLOR_PAIR(1));
-
-    gui_draw_obj_conditionally(g->current, g->current->stairsUp, '<');
-    gui_draw_obj_conditionally(g->current, g->current->stairsDown, '>');
-    gui_draw_obj_conditionally(g->current, g->player->base->pos, '@');
+    gui_draw_obj_conditionally(g->current, g->current->stairsUp, '<', WHITE);
+    gui_draw_obj_conditionally(g->current, g->current->stairsDown, '>', WHITE);
+    gui_draw_obj_conditionally(g->current, g->player->base->pos, '@', GREEN);
 
     refresh();
 }
@@ -92,13 +97,16 @@ void gui_draw_obj_relative(Point p, char c)
     mvaddch(p.y - g_cam.y, p.x - g_cam.x, c);
 }
 
-void gui_draw_obj_conditionally(Level* l, Point p, char c)
+void gui_draw_obj_conditionally(Level* l, Point p, char c, enum Color color)
 {
     if (!gui_is_onscr(p))
         return;
     if (!l->tiles[p.x][p.y].isVisible)
         return;
+
+    attron(COLOR_PAIR(color));
     gui_draw_obj_relative(p, c);
+    attroff(COLOR_PAIR(color));
 }
 
 void gui_status(const char* msg)

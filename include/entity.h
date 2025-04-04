@@ -6,7 +6,9 @@
 typedef struct Entity
 {
     Point pos;
+    char* name;
     int sight;
+    int xpValue;
 
     int hp, baseHP;
     int mp, baseMP;
