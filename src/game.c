@@ -8,13 +8,15 @@ Game* game_new(void)
 {
     Game* g = malloc(sizeof(Game));
     g->levels = g->current = level_new(NULL);
-    g->state = MAP_WALK;
-    g->running = TRUE;
     g->player = player_new();
     g->player->base->sight = 5;
     player_move(g->player, g->current->stairsUp);
     level_fov(g->current, g->player->base);
     cam_center(g->player->base->pos);
+    gui_status("HP: 100/100 MP: 100/100 XP:0/1000");
+    
+    g->state = MAP_WALK;
+    g->running = TRUE;
     return g;
 }
 
@@ -56,12 +58,6 @@ void game_run(Game* g)
     }
 }
 
-void game_render_info(Game* g)
-{
-    noise();
-    mvprintw(0, 0, "Depth: %d", g->current->depth);
-}
-
 void game_state(Game* g, enum GameState state)
 {
     if (g->state == state)
@@ -75,7 +71,7 @@ void game_state(Game* g, enum GameState state)
             gui_draw(g);
             break;
         case INFO_SCREEN:
-            game_render_info(g);
+            gui_draw_info(g);
             break;
     }
 }

@@ -29,6 +29,8 @@ typedef struct Point
     int y;
 } Point;
 
+/* Returns the amount of digits an integer has. INTEGER OPTIMIZED CODE! */
+int digits(int n);
 void noise();
 
 #endif

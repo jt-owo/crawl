@@ -5,6 +5,8 @@
 #include <string.h>
 #include <ncurses.h>
 
+static char* status = "";
+
 void gui_init(void)
 {
     initscr();
@@ -32,7 +34,7 @@ void gui_draw(Game* g)
 
     move(0, 0);
 
-    for (int y = 0; y < LINES; ++y)
+    for (int y = 0; y < LINES - 1; ++y)
     {
         for (int x = 0; x < COLS; ++x)
         {
@@ -66,10 +68,23 @@ void gui_draw(Game* g)
     refresh();
 }
 
+void gui_draw_info(Game* g)
+{
+    noise();
+    mvprintw(0, 0, "Depth: %d", g->current->depth);
+}
+
+void gui_draw_status()
+{
+    mvprintw(LINES - 1, 0, status);
+}
+
 void gui_redraw(Game* g)
 {
     if (g->state == MAP_WALK)
         gui_draw(g);
+    else if (g->state == INFO_SCREEN)
+        gui_draw_info(g);
 }
 
 void gui_draw_obj_relative(Point p, char c)
@@ -84,6 +99,14 @@ void gui_draw_obj_conditionally(Level* l, Point p, char c)
     if (!l->tiles[p.x][p.y].isVisible)
         return;
     gui_draw_obj_relative(p, c);
+}
+
+void gui_status(const char* msg)
+{
+    status = calloc(strlen(msg), sizeof(char));
+    strcpy(status, msg);
+    gui_draw_status();
+    free(status);
 }
 
 void gui_alert(const char* msg)
