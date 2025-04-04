@@ -93,11 +93,56 @@ void level_add_corridor(Level* l, Corridor* c)
     }
 }
 
-void level_fov(Level* l, Entity* e)
+void level_fov(Level* l, Entity* e, float distance)
 {
-    for (int y = MAX(e->pos.y - e->sight, 0); y < MIN(e->pos.y + e->sight, MAP_H); ++y)
-        for (int x = MAX(e->pos.x - e->sight, 0); x < MIN(e->pos.x + e->sight, MAP_W); ++x)
-            l->tiles[x][y].isVisible = TRUE;
+    level_fov_calc(l, NORTH, e->pos.x, e->pos.y, distance);
+    level_fov_calc(l, SOUTH, e->pos.x, e->pos.y, distance);
+    level_fov_calc(l, EAST, e->pos.x, e->pos.y, distance);
+    level_fov_calc(l, WEST, e->pos.x, e->pos.y, distance);
+}
+
+void level_fov_calc(Level* l, enum Direction d, int x, int y, float distance)
+{
+    if (distance < 0)
+        return;
+
+    Tile* t = &l->tiles[x][y];
+    t->isVisible = TRUE;
+    if (!tile_trans(t))
+        return;
+
+    if (d == NORTH)
+    {
+        level_fov_calc(l, NW, x - 1, y - 1, distance - 1.41);
+        level_fov_calc(l, NORTH, x, y - 1, distance - 1);
+        level_fov_calc(l, NE, x + 1, y - 1, distance - 1.41);
+    }
+    else if (d == SOUTH)
+    {
+        level_fov_calc(l, SW, x - 1, y + 1, distance - 1.41);
+        level_fov_calc(l, SOUTH, x, y + 1, distance - 1);
+        level_fov_calc(l, SE, x + 1, y + 1, distance - 1.41);
+    }
+    else if (d == EAST)
+    {
+        level_fov_calc(l, NE, x + 1, y - 1, distance - 1.41);
+        level_fov_calc(l, EAST, x + 1, y, distance - 1);
+        level_fov_calc(l, SE, x + 1, y + 1, distance - 1.41);
+    }
+    else if (d == WEST)
+    {
+        level_fov_calc(l, NW, x - 1, y - 1, distance - 1.41);
+        level_fov_calc(l, WEST, x - 1, y, distance - 1);
+        level_fov_calc(l, SW, x - 1, y + 1, distance - 1.41);
+    }
+    else if (d == NW)
+        level_fov_calc(l, NW, x - 1, y - 1, distance - 1.41);
+    else if (d == NE)
+        level_fov_calc(l, NE, x + 1, y - 1, distance - 1.41);
+    else if (d == SW)
+        level_fov_calc(l, SW, x - 1, y + 1, distance - 1.41);
+    else if (d == SE)
+        level_fov_calc(l, SE, x + 1, y + 1, distance - 1.41);
 }
 
 bool room_fits(Level* l, Rect* r)

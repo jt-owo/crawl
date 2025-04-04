@@ -10,3 +10,8 @@ Tile tile_create(char c, bool isVisible)
 
     return t;
 }
+
+bool tile_trans(const Tile* t)
+{
+    return !(t->c == WALL_CHAR || t->c == CLOSED_DOOR_CHAR);
+}

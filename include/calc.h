@@ -1,6 +1,8 @@
 #ifndef _CALC_H
 #define _CALC_H
 
+#include <tile.h>
+
 #define NOISE_CHAR '#'
 
 #define MAX(x, y) ((x > y) ? x : y)
@@ -12,7 +14,11 @@ enum Direction {
     NORTH,
     SOUTH,
     EAST,
-    WEST
+    WEST,
+    NW,
+    NE,
+    SW,
+    SE
 };
 
 typedef struct Rect
@@ -28,6 +34,9 @@ typedef struct Point
     int x;
     int y;
 } Point;
+
+/* Checks if two points are equal. */
+bool pteq(Point p1, Point p2);
 
 /* Returns the amount of digits an integer has. INTEGER OPTIMIZED CODE! */
 int digits(int n);

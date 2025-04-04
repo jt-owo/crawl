@@ -23,6 +23,7 @@ void cam_move(Game* g, enum Direction d)
             break;
         case WEST:
             g_cam.x -= stepX;
+        default: break;
     }
 
     gui_redraw(g);

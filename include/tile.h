@@ -18,5 +18,7 @@ typedef struct Tile
 
 /* Creates a new tile. */
 Tile tile_create(char c, bool isVisible);
+/* Checks if a tile is transparent. */
+bool tile_trans(const Tile* t);
 
 #endif

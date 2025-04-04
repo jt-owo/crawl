@@ -11,7 +11,7 @@ Game* game_new(void)
     g->player = player_new();
     g->player->base->sight = 5;
     player_move(g->player, g->current->stairsUp);
-    level_fov(g->current, g->player->base);
+    level_fov(g->current, g->player->base, g->player->base->sight);
     cam_center(g->player->base->pos);
     gui_status("HP: 100/100 MP: 100/100 XP:0/1000");
     
@@ -83,8 +83,8 @@ void game_ascend(Game* g)
 
     g->current = g->current->prev;
     
-    player_move(g->player, g->current->stairsUp);
-    level_fov(g->current, g->player->base);
+    player_move(g->player, g->current->stairsDown);
+    level_fov(g->current, g->player->base, g->player->base->sight);
     cam_center(g->player->base->pos);
     gui_redraw(g);
 }
@@ -97,8 +97,8 @@ void game_descend(Game* g)
 
     g->current = g->current->next;
     
-    player_move(g->player, g->current->stairsDown);
-    level_fov(g->current, g->player->base);
+    player_move(g->player, g->current->stairsUp);
+    level_fov(g->current, g->player->base, g->player->base->sight);
     cam_center(g->player->base->pos);
     gui_redraw(g);
 }
@@ -120,16 +120,16 @@ void game_move(Game* g, enum Direction d)
     if (t->c == FLOOR_CHAR || t->c == OPEN_DOOR_CHAR)
     {
         player_move(g->player, target);
-        level_fov(g->current, g->player->base);
+        level_fov(g->current, g->player->base, g->player->base->sight);
         cam_center(g->player->base->pos);
         gui_redraw(g);
     }
     else if (t->c == CLOSED_DOOR_CHAR)
     {
         t->c = OPEN_DOOR_CHAR;
+        level_fov(g->current, g->player->base, g->player->base->sight);
         gui_redraw(g);
     }
-
 }
 
 void handle_input(Game* g, int key)
@@ -138,9 +138,15 @@ void handle_input(Game* g, int key)
     {
         case MAP_WALK:
             if (key == '<')
-                game_ascend(g);
+            {
+                if (pteq(g->player->base->pos, g->current->stairsUp))
+                    game_ascend(g);
+            }
             else if (key == '>')
-                game_descend(g);
+            {
+                if (pteq(g->player->base->pos, g->current->stairsDown))
+                    game_descend(g);
+            }
             else if (key == 'w')
                 game_move(g, NORTH);
             else if (key == 's')

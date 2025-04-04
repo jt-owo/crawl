@@ -35,7 +35,9 @@ void level_add_room(Level* l, Rect* r);
 /* Adds a corridor to a level. */
 void level_add_corridor(Level* l, Corridor* c);
 /* Calculates the field of view for an entity. */
-void level_fov(Level* l, Entity* e);
+void level_fov(Level* l, Entity* e, float distance);
+/* Calculates the field of view in a triangular direction. */
+void level_fov_calc(Level* l, enum Direction d, int x, int y, float distance);
 /* Checks if a room area fits in a level. */
 bool room_fits(Level* l, Rect* r);
 /* Checks if a corridor area fits in a level. */
