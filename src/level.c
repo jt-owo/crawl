@@ -19,7 +19,7 @@ Level* level_new(Level* parent)
     // Blank all tiles.
     for (int y = 0; y < MAP_H; ++y)
         for (int x = 0; x < MAP_W; ++x)
-            l->tiles[x][y] = tile_create(WALL_CHAR, TRUE);
+            l->tiles[x][y] = tile_create(WALL_CHAR, FALSE);
     
     Rect r = {0};
     r.w = (rand() % 15) + 5;
@@ -91,6 +91,13 @@ void level_add_corridor(Level* l, Corridor* c)
         for (int i = 1; i < c->area.h; ++i)
             l->tiles[c->area.x][i + c->area.y].c = FLOOR_CHAR;        
     }
+}
+
+void level_fov(Level* l, Entity* e)
+{
+    for (int y = MAX(e->pos.y - e->sight, 0); y < MIN(e->pos.y + e->sight, MAP_H); ++y)
+        for (int x = MAX(e->pos.x - e->sight, 0); x < MIN(e->pos.x + e->sight, MAP_W); ++x)
+            l->tiles[x][y].isVisible = TRUE;
 }
 
 bool room_fits(Level* l, Rect* r)

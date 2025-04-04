@@ -1,5 +1,6 @@
 #include "gui.h"
-#include <cam.h>
+#include "cam.h"
+#include "calc.h"
 #include <stdlib.h>
 #include <string.h>
 #include <ncurses.h>
@@ -41,6 +42,8 @@ void gui_draw(Game* g)
             Tile t = g->current->tiles[x2][y2];
             if (x2 >= MAP_W || x2 < 0 || y2 >= MAP_H || y2 < 0)
                 c = EMPTY_CHAR;
+            else if (!t.isVisible)
+                c = EMPTY_CHAR;
             else
                 c = t.c;
 
@@ -56,12 +59,10 @@ void gui_draw(Game* g)
     // Special objects
     attron(COLOR_PAIR(1));
 
-    if (gui_is_onscr(g->current->stairsUp))
-        gui_draw_obj_relative(g->current->stairsUp, '<');
-    
-    if (gui_is_onscr(g->current->stairsDown))
-        gui_draw_obj_relative(g->current->stairsDown, '>');
-    
+    gui_draw_obj_conditionally(g->current, g->current->stairsUp, '<');
+    gui_draw_obj_conditionally(g->current, g->current->stairsDown, '>');
+    gui_draw_obj_conditionally(g->current, g->player->base->pos, '@');
+
     refresh();
 }
 
@@ -74,6 +75,15 @@ void gui_redraw(Game* g)
 void gui_draw_obj_relative(Point p, char c)
 {
     mvaddch(p.y - g_cam.y, p.x - g_cam.x, c);
+}
+
+void gui_draw_obj_conditionally(Level* l, Point p, char c)
+{
+    if (!gui_is_onscr(p))
+        return;
+    if (!l->tiles[p.x][p.y].isVisible)
+        return;
+    gui_draw_obj_relative(p, c);
 }
 
 void gui_alert(const char* msg)

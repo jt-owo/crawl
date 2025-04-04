@@ -2,16 +2,18 @@
 #define _GAME_H
 
 #include "level.h"
+#include "player.h"
 #include "calc.h"
 
 enum GameState {
     MAP_WALK,
-    MAP_INFO
+    INFO_SCREEN
 };
 
 typedef struct Game
 {
     enum GameState      state;
+    Player*             player;
     Level*              levels;
     Level*              current;
     bool                running;
@@ -32,7 +34,9 @@ void game_state(Game* g, enum GameState state);
 void game_ascend(Game* g);
 /* Descends a level down. */
 void game_descend(Game* g);
+/* Move a player in a direction. */
+void game_move(Game* g, enum Direction d);
 /* Handle control input. */
-void handle_input(Game* g, char key);
+void handle_input(Game* g, int key);
 
 #endif

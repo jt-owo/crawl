@@ -25,5 +25,11 @@ void cam_move(Game* g, enum Direction d)
             g_cam.x -= stepX;
     }
 
-    gui_draw(g);
+    gui_redraw(g);
+}
+
+void cam_center(Point p)
+{
+    g_cam.x = p.x - COLS / 2;
+    g_cam.y = p.y - LINES / 2;
 }

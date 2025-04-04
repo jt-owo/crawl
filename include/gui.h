@@ -11,6 +11,8 @@ void gui_draw(Game* g);
 void gui_redraw(Game* g);
 /* Draws an object relative to the camera. */
 void gui_draw_obj_relative(Point p, char c);
+/* Draws an object based on visibility. */
+void gui_draw_obj_conditionally(Level* l, Point p, char c);
 /* Displays an alert with a message. */
 void gui_alert(const char* msg);
 /* Displays a confirm dialogue. */

@@ -1,5 +1,5 @@
 CFLAGS+= -Wall -pedantic -ggdb -O3 -Iinclude
-OBJECTS= main.o game.o cam.o calc.o gui.o tile.o level.o
+OBJECTS= main.o game.o cam.o calc.o gui.o tile.o level.o entity.o player.o
 LIBS= -lncurses
 
 crawl: ${OBJECTS}

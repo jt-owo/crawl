@@ -2,18 +2,13 @@
 #define _LEVEL_H
 
 #include "tile.h"
+#include "entity.h"
 #include "calc.h"
 
 /* Width of a level. */
 #define MAP_W   320
 /* Height of a level. */
 #define MAP_H   100
-
-#define EMPTY_CHAR          ' '
-#define FLOOR_CHAR          '.'
-#define WALL_CHAR           '#'
-#define OPEN_DOOR_CHAR      '-'
-#define CLOSED_DOOR_CHAR    '+'
 
 typedef struct Corridor
 {
@@ -39,6 +34,8 @@ void level_free(Level* l);
 void level_add_room(Level* l, Rect* r);
 /* Adds a corridor to a level. */
 void level_add_corridor(Level* l, Corridor* c);
+/* Calculates the field of view for an entity. */
+void level_fov(Level* l, Entity* e);
 /* Checks if a room area fits in a level. */
 bool room_fits(Level* l, Rect* r);
 /* Checks if a corridor area fits in a level. */

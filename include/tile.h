@@ -3,6 +3,13 @@
 
 #define bool _Bool
 
+#define EMPTY_CHAR          ' '
+#define FLOOR_CHAR          '.'
+#define WALL_CHAR           '#'
+#define OPEN_DOOR_CHAR      '-'
+#define CLOSED_DOOR_CHAR    '+'
+
+
 typedef struct Tile
 {
     char c;
