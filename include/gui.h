@@ -2,14 +2,8 @@
 #define _GUI_H
 
 #include "game.h"
-
-enum Color {
-    WHITE = 0,
-    RED = 1,
-    GREEN = 2,
-    BLUE = 3,
-    YELLOW = 4
-};
+#include "color.h"
+#include "list.h"
 
 /* Initializes the graphical user interface with ncurses. */
 void gui_init(void);
@@ -23,6 +17,10 @@ void gui_redraw(Game* g);
 void gui_draw_obj_relative(Point p, char c);
 /* Draws an object based on visibility. */
 void gui_draw_obj_conditionally(Level* l, Point p, char c, enum Color color);
+/* Draws an object as an overlay. */
+void gui_draw_as_overlay(Point p, char c, enum Color color);
+/* Draws an selector for cam mode. */
+void gui_draw_cam_selector();
 /* Sets the status and redraws it */
 void gui_status(const char* msg);
 /* Displays an alert with a message. */

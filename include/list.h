@@ -25,7 +25,7 @@
     {                                                                   \
         if (n >= arr->size)                                             \
         {                                                               \
-            type **data = realloc(arr->data,                            \
+            type** data = realloc(arr->data,                            \
                                   (arr->size + 1) * sizeof(type*));     \
             if (data != NULL)                                           \
             {                                                           \

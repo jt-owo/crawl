@@ -9,6 +9,8 @@ Player* player_new(enum Class c)
     Player* p = malloc(sizeof(Player));
     p->base = entity_new();
     p->base->name       = "Player";
+    p->base->symbol     = '@';
+    p->base->color      = GREEN;
     p->class            = c;
     p->gold             = 0;
     p->xp               = 0;

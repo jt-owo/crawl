@@ -2,20 +2,23 @@
 #define _ENTITY_H
 
 #include "calc.h"
+#include "color.h"
 
 typedef struct Entity
 {
-    Point pos;
-    char* name;
-    int sight;
-    int xpValue;
+    Point           pos;
+    char*           name;
+    char            symbol;
+    enum Color      color;
+    int             sight;
+    int             xpValue;
 
-    int hp, baseHP;
-    int mp, baseMP;
-    int str, baseSTR;
-    int tou, baseTOU;
-    int att, baseATT;
-    int def, baseDEF;
+    int             hp, baseHP;
+    int             mp, baseMP;
+    int             str, baseSTR;
+    int             tou, baseTOU;
+    int             att, baseATT;
+    int             def, baseDEF;
 } Entity;
 
 /* Creates a new entity and allocates the memory. */

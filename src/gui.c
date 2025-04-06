@@ -65,10 +65,20 @@ void gui_draw(Game* g)
         }
     }
 
+    // Gold
+    Gold* gold = NULL;
+    for (size_t i = 0; i < g->current->goldPiles->size; i++)
+    {
+        LIST_GET(g->current->goldPiles, i, gold);
+        if (gold == NULL)
+            continue;
+       gui_draw_obj_conditionally(g->current, gold->pos, '$', YELLOW);
+    }
+
     // Special objects
     gui_draw_obj_conditionally(g->current, g->current->stairsUp, '<', WHITE);
     gui_draw_obj_conditionally(g->current, g->current->stairsDown, '>', WHITE);
-    gui_draw_obj_conditionally(g->current, g->player->base->pos, '@', GREEN);
+    gui_draw_obj_conditionally(g->current, g->player->base->pos, g->player->base->symbol, g->player->base->color);
 
     refresh();
 }
@@ -82,14 +92,27 @@ void gui_draw_info(Game* g)
 void gui_draw_status()
 {
     mvprintw(LINES - 1, 0, status);
+    for (int i = strlen(status); i <= COLS; ++i)
+        addch(' ');
 }
 
 void gui_redraw(Game* g)
 {
     if (g->state == MAP_WALK)
+    {
+        cam_center(g->player->base->pos);
         gui_draw(g);
+    }
+    else if (g->state == CAM_MOVE)
+    {
+        gui_status(game_tile_description(g, g_selector));
+        gui_draw(g);
+        gui_draw_cam_selector();
+    }
     else if (g->state == INFO_SCREEN)
+    {
         gui_draw_info(g);
+    }
 }
 
 void gui_draw_obj_relative(Point p, char c)
@@ -107,6 +130,32 @@ void gui_draw_obj_conditionally(Level* l, Point p, char c, enum Color color)
     attron(COLOR_PAIR(color));
     gui_draw_obj_relative(p, c);
     attroff(COLOR_PAIR(color));
+}
+
+void gui_draw_as_overlay(Point p, char c, enum Color color)
+{
+    if (!gui_is_onscr(p))
+        return;
+    attron(COLOR_PAIR(color));
+    mvaddch(p.y - g_cam.y, p.x - g_cam.x, c);
+    attroff(COLOR_PAIR(color));
+}
+
+void gui_draw_cam_selector()
+{
+    Point p = {
+        .x = g_selector.x - 1,
+        .y = g_selector.y
+    };
+
+    gui_draw_as_overlay(p, '-', RED);
+    p.x = g_selector.x + 1;
+    gui_draw_as_overlay(p, '-', RED);
+    p.x = g_selector.x;
+    p.y = g_selector.y - 1;
+    gui_draw_as_overlay(p, '|', RED);
+    p.y = g_selector.y + 1;
+    gui_draw_as_overlay(p, '|', RED);
 }
 
 void gui_status(const char* msg)

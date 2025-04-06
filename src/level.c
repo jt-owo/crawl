@@ -1,7 +1,11 @@
 #include "level.h"
+#include "gold.h"
+#include "calc.h"
 #include <stdlib.h>
 #include <ncurses.h>
-#include "calc.h"
+
+// REMOVE
+#include "gui.h"
 
 #define CORRIDOR_TRIES      30
 
@@ -51,6 +55,14 @@ void level_add_room(Level* l, Rect* r)
         for (int x = 0; x < r->w; ++x)
             l->tiles[x + r->x][y + r->y].c = FLOOR_CHAR;
 
+    // Gold
+    if (rand() % 100 >= 10)
+        level_add_gold(l, r);
+
+    // Monster
+    if (rand() % 100  <= 70)
+        level_spawn_monster(l, r);
+
     // Connectors
     Corridor c = {0};
     Rect rChild = {0};
@@ -91,6 +103,26 @@ void level_add_corridor(Level* l, Corridor* c)
         for (int i = 1; i < c->area.h; ++i)
             l->tiles[c->area.x][i + c->area.y].c = FLOOR_CHAR;        
     }
+}
+
+void level_add_gold(Level* l, Rect* r)
+{
+    if (l->goldPiles == NULL)
+    {
+        LIST(GoldPiles, l->goldPiles, 1);
+    }
+
+    Gold* g = malloc(sizeof(Gold));
+    g->pos.x = r->x + rand() % r->w;
+    g->pos.y = r->y + rand() % r->h;
+    g->amount = rand() % ((l->depth * l->depth) + 5) + 1;
+    
+    LIST_SET(Gold, l->goldPiles, l->goldPiles->size, g);
+}
+
+void level_spawn_monster(Level* l, Rect* r)
+{
+    // TODO:
 }
 
 void level_fov(Level* l, Entity* e, float distance)

@@ -3,6 +3,7 @@
 
 #include "tile.h"
 #include "entity.h"
+#include "gold.h"
 #include "calc.h"
 
 /* Width of a level. */
@@ -22,6 +23,7 @@ typedef struct Level
     Tile                tiles[MAP_W][MAP_H];
     Point               stairsUp;
     Point               stairsDown;
+    GoldPiles*          goldPiles;
     struct Level*       prev;
     struct Level*       next;
 } Level;
@@ -34,6 +36,10 @@ void level_free(Level* l);
 void level_add_room(Level* l, Rect* r);
 /* Adds a corridor to a level. */
 void level_add_corridor(Level* l, Corridor* c);
+/* Adds a gold pile to a level. */
+void level_add_gold(Level* l, Rect* r);
+/* Spawns a monster into a level. */
+void level_spawn_monster(Level* l, Rect* r);
 /* Calculates the field of view for an entity. */
 void level_fov(Level* l, Entity* e, float distance);
 /* Calculates the field of view in a triangular direction. */

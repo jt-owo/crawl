@@ -23,10 +23,18 @@ Game* game_new(void)
 void game_free(Game* g)
 {
     if (g == NULL) return;
+    if (g->current != NULL)
+    {
+        if (g->current->goldPiles != NULL)
+        {
+            LIST_FREE(g->current->goldPiles);
+        }
+    }
     if (g->levels != NULL)
         level_free(g->levels);
     if (g->player != NULL)
         player_free(g->player);
+
     free(g);
 }
 
@@ -48,6 +56,8 @@ void game_run(Game* g)
             
         if (key == '`')
             state = MAP_WALK;
+        else if (key == 'l')
+            state = CAM_MOVE;
         else if (key == 'i')
             state = INFO_SCREEN;
         else
@@ -68,7 +78,12 @@ void game_state(Game* g, enum GameState state)
     switch (state)
     {
         case MAP_WALK:
-            gui_draw(g);
+            gui_redraw(g);
+            player_status(g->player);
+            break;
+        case CAM_MOVE:
+            g_selector = g->player->base->pos;
+            gui_redraw(g);
             break;
         case INFO_SCREEN:
             gui_draw_info(g);
@@ -132,6 +147,50 @@ void game_move(Game* g, enum Direction d)
     }
 }
 
+const char* game_tile_description(Game* g, Point p)
+{
+    static const char* UNKNOWN = "Unexplored";
+
+    if (p.x > MAP_W)
+        return UNKNOWN;
+    if (p.y > MAP_H)
+        return UNKNOWN;
+    
+    Tile* t = &g->current->tiles[p.x][p.y];
+    if (!t->isVisible)
+        return UNKNOWN;
+    
+    if (pteq(p, g->player->base->pos))
+        return class_name(g->player->class);
+    
+    Gold* gold = NULL;
+    for (size_t i = 0; i < g->current->goldPiles->size; i++)
+    {
+        LIST_GET(g->current->goldPiles, i, gold);
+        if (gold == NULL || !pteq(p, gold->pos))
+            continue;
+        
+        int size = digits(gold->amount) + 6;
+        char* goldStr = calloc(size, sizeof(char));
+        snprintf(goldStr, size, "%d gold", gold->amount);
+        return goldStr;
+    }
+    
+    if (pteq(p, g->current->stairsUp))
+        return "Stairs up";
+    else if (pteq(p, g->current->stairsDown))
+        return "Stairs down";
+    else if (t->c == FLOOR_CHAR)
+        return "A floor";
+    else if (t->c == WALL_CHAR)
+        return "A wall";
+    else if (t->c == OPEN_DOOR_CHAR)
+        return "Open door";
+    else if (t->c == CLOSED_DOOR_CHAR)
+        return "Closed door";
+    return "UNKNOWN";
+}
+
 void handle_input(Game* g, int key)
 {
     switch (g->state)
@@ -155,7 +214,9 @@ void handle_input(Game* g, int key)
                 game_move(g, EAST);
             else if (key == 'a')
                 game_move(g, WEST);
-            else if (key == KEY_UP)
+            break;
+        case CAM_MOVE:
+            if (key == KEY_UP)
                 cam_move(g, NORTH);
             else if (key == KEY_DOWN)
                 cam_move(g, SOUTH);
@@ -163,6 +224,14 @@ void handle_input(Game* g, int key)
                 cam_move(g, EAST);
             else if (key == KEY_LEFT)
                 cam_move(g, WEST);
+            else if (key == 'w')
+                cam_move_selector(g, NORTH);
+            else if (key == 's')
+                cam_move_selector(g, SOUTH);
+            else if (key == 'd')
+                cam_move_selector(g, EAST);
+            else if (key == 'a')
+                cam_move_selector(g, WEST);
             break;
         case INFO_SCREEN:
             break;

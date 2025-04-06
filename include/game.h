@@ -5,8 +5,10 @@
 #include "player.h"
 #include "calc.h"
 
-enum GameState {
+enum GameState
+{
     MAP_WALK,
+    CAM_MOVE,
     INFO_SCREEN
 };
 
@@ -34,6 +36,8 @@ void game_ascend(Game* g);
 void game_descend(Game* g);
 /* Move a player in a direction. */
 void game_move(Game* g, enum Direction d);
+/* Returns the tile description. */
+const char* game_tile_description(Game* g, Point p);
 /* Handle control input. */
 void handle_input(Game* g, int key);
 

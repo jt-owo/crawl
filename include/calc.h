@@ -7,10 +7,11 @@
 
 #define MAX(x, y) ((x > y) ? x : y)
 #define MIN(x, y) ((x < y) ? x : y)
-#define LENGTH(X) (sizeof X / sizeof X[0])
+#define LENGTH(x) (sizeof x / sizeof x[0])
 #define ABS(x) ((x < 0) ? -x : x)
 
-enum Direction {
+enum Direction
+{
     NORTH,
     SOUTH,
     EAST,
