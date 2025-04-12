@@ -51,10 +51,10 @@ void player_restore(Player* p)
 
 void player_status(Player* p)
 {
-    const char* const HP      = " HP: ";
-    const char* const MP      = " MP: ";
-    const char* const GP      = " GP: ";
-    const char* const SLASH   = "/";
+    static const char* const HP      = "HP: ";
+    static const char* const MP      = " MP: ";
+    static const char* const GP      = " GP: ";
+    static const char* const SLASH   = "/";
 
     bool hasMana = p->base->baseMP < 0;
 

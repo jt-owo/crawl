@@ -2,6 +2,8 @@
 #define _LIST_H
 
 #include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define LIST(type, arr, n)                                              \
 {                                                                       \
@@ -34,6 +36,23 @@
             }                                                           \
         }                                                               \
         arr->data[n - 1] = value;                                       \
+    }                                                                   \
+}                                                                       \
+
+#define LIST_REMOVE(type, arr, n)                                       \
+{                                                                       \
+    type** tmp = calloc(arr->size - 1, sizeof(type));                   \
+                                                                        \
+    if (n != 0)                                                         \
+    {                                                                   \
+        memcpy(tmp, arr->data, n * sizeof(type));                       \
+        arr->data = tmp;                                                \
+    }                                                                   \
+                                                                        \
+    if (n != (arr->size - 1))                                           \
+    {                                                                   \
+        memcpy(tmp + n, arr->data + n + 1, (arr->size - n - 1) * sizeof(type)); \
+        arr->data = tmp;                                                \
     }                                                                   \
 }                                                                       \
 

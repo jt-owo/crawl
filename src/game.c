@@ -78,6 +78,7 @@ void game_state(Game* g, enum GameState state)
     switch (state)
     {
         case MAP_WALK:
+            cam_center(g->player->base->pos);
             gui_redraw(g);
             player_status(g->player);
             break;
@@ -137,13 +138,57 @@ void game_move(Game* g, enum Direction d)
         player_move(g->player, target);
         level_fov(g->current, g->player->base, g->player->base->sight);
         cam_center(g->player->base->pos);
-        gui_redraw(g);
     }
     else if (t->c == CLOSED_DOOR_CHAR)
     {
         t->c = OPEN_DOOR_CHAR;
         level_fov(g->current, g->player->base, g->player->base->sight);
-        gui_redraw(g);
+    }
+
+    player_status(g->player);
+    gui_redraw(g);
+}
+
+void game_interact(Game* g)
+{
+    Gold* found = NULL;
+    int foundIndex = 0;
+    Gold* gold = NULL;
+    for (int i = 0; i < g->current->goldPiles->size; ++i)
+    {
+        LIST_GET(g->current->goldPiles, i, gold);
+        if (gold == NULL) continue;
+        if (pteq(gold->pos, g->player->base->pos))
+        {
+            found = gold;
+            foundIndex = i;
+            break;
+        }
+    }
+
+    if (found == NULL)
+    {
+        gui_status("Nothing to interact");
+    }
+    else
+    {
+        g->player->gold += found->amount;
+        int size = digits(found->amount) + 16;
+        char* str = calloc(0, sizeof(char));
+        snprintf(str, size, "Picked up %d gold", found->amount);
+        LIST_REMOVE(Gold, g->current->goldPiles, foundIndex);
+        //Gold **tmp = calloc(g->current->goldPiles->size - 1, sizeof(Gold));
+//
+        //if (foundIndex != 0)
+        //    memcpy(tmp, g->current->goldPiles->data, foundIndex * sizeof(Gold));
+//
+        //if (foundIndex != (g->current->goldPiles->size - 1))
+        //    memcpy(tmp + foundIndex, g->current->goldPiles->data + foundIndex + 1, (g->current->goldPiles->size - foundIndex - 1) * sizeof(Gold *));
+//
+        //g->current->goldPiles->data = tmp;
+
+        gui_status(str);
+        free(str);
     }
 }
 
@@ -214,6 +259,8 @@ void handle_input(Game* g, int key)
                 game_move(g, EAST);
             else if (key == 'a')
                 game_move(g, WEST);
+            else if (key == 'f')
+                game_interact(g);
             break;
         case CAM_MOVE:
             if (key == KEY_UP)

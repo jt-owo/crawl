@@ -23,11 +23,8 @@ void gui_init(void)
         exit(EXIT_FAILURE);
     }
 
-    init_pair(WHITE, COLOR_WHITE, COLOR_BLACK);
-    init_pair(RED, COLOR_RED, COLOR_BLACK);
-    init_pair(GREEN, COLOR_GREEN, COLOR_BLACK);
-    init_pair(BLUE, COLOR_BLUE, COLOR_BLACK);
-    init_pair(YELLOW, COLOR_YELLOW, COLOR_BLACK);
+    for (int i = 0; i < 8; ++i)
+        init_pair(i, i, COLOR_BLACK);
 }
 
 void gui_draw(Game* g)
@@ -91,7 +88,7 @@ void gui_draw_info(Game* g)
 
 void gui_draw_status()
 {
-    mvprintw(LINES - 1, 0, status);
+    mvprintw(LINES - 1, 1, status);
     for (int i = strlen(status); i <= COLS; ++i)
         addch(' ');
 }
@@ -100,13 +97,14 @@ void gui_redraw(Game* g)
 {
     if (g->state == MAP_WALK)
     {
-        cam_center(g->player->base->pos);
         gui_draw(g);
+        gui_draw_status();
     }
     else if (g->state == CAM_MOVE)
     {
         gui_status(game_tile_description(g, g_selector));
         gui_draw(g);
+        gui_draw_status();
         gui_draw_cam_selector();
     }
     else if (g->state == INFO_SCREEN)
@@ -143,27 +141,29 @@ void gui_draw_as_overlay(Point p, char c, enum Color color)
 
 void gui_draw_cam_selector()
 {
+    static enum Color color = PURPLE;
     Point p = {
         .x = g_selector.x - 1,
         .y = g_selector.y
     };
 
-    gui_draw_as_overlay(p, '-', RED);
+    gui_draw_as_overlay(p, '-', color);
     p.x = g_selector.x + 1;
-    gui_draw_as_overlay(p, '-', RED);
+    gui_draw_as_overlay(p, '-', color);
     p.x = g_selector.x;
     p.y = g_selector.y - 1;
-    gui_draw_as_overlay(p, '|', RED);
+    gui_draw_as_overlay(p, '|', color);
     p.y = g_selector.y + 1;
-    gui_draw_as_overlay(p, '|', RED);
+    gui_draw_as_overlay(p, '|', color);
 }
 
 void gui_status(const char* msg)
 {
-    status = calloc(strlen(msg), sizeof(char));
+    int size = strlen(msg) + 1;
+    status = calloc(size, sizeof(char));
+    snprintf(status, size, " %s", msg);
     strcpy(status, msg);
     gui_draw_status();
-    free(status);
 }
 
 void gui_alert(const char* msg)
@@ -261,5 +261,7 @@ bool gui_is_onscr(Point p)
 
 void gui_end(void)
 {
+    if (status != NULL)
+        free(status);
     endwin();
 }

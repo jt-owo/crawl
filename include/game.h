@@ -36,6 +36,8 @@ void game_ascend(Game* g);
 void game_descend(Game* g);
 /* Move a player in a direction. */
 void game_move(Game* g, enum Direction d);
+/* Interacts with an object the player is standing on. */
+void game_interact(Game* g);
 /* Returns the tile description. */
 const char* game_tile_description(Game* g, Point p);
 /* Handle control input. */
