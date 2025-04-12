@@ -23,10 +23,18 @@ void gui_draw_as_overlay(Point p, char c, enum Color color);
 void gui_draw_cam_selector();
 /* Sets the status and redraws it */
 void gui_status(const char* msg);
-/* Displays an alert with a message. */
+/* Draws an alert with a message. */
 void gui_alert(const char* msg);
-/* Displays a confirm dialogue. */
+/* Draws a confirm dialogue. */
 bool gui_confirm(const char* msg, char a, char b);
+/* Draws the default exit dialogue. */
+void gui_quit(Game* g);
+/* Handles resizing of the window. */
+void gui_resize(Game* g);
+/* Draws the character info. */
+void gui_draw_player_screen(Player* p);
+/* Draws the inventory of the player. */
+void gui_draw_inv(Game* g);
 /* Checks if a point is inside the screen bounds. */
 bool gui_is_onscr(Point p);
 /* Closes the graphical user interface. */

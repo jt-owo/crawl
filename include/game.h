@@ -9,6 +9,7 @@ enum GameState
 {
     MAP_WALK,
     CAM_MOVE,
+    CHARACTER_SCREEN,
     INFO_SCREEN
 };
 

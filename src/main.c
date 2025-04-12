@@ -8,14 +8,15 @@
 
 Game *g = NULL;
 
+static void resize_handler(int sign)
+{
+    gui_resize(g);
+}
+
 static void interrupt_handler(int sign)
 {
-    g->running = !gui_confirm("Do you want to force quit? (safely)", 'y', 'n');
-    if (g->running)
-    {
-        gui_redraw(g);
-    }
-    else
+    gui_quit(g);
+    if (!g->running)
     {
         gui_end();
         exit(EXIT_SUCCESS);
@@ -29,6 +30,7 @@ int main(int argc, char** argv)
 
     gui_init();
 
+    signal(SIGWINCH, resize_handler);
     signal(SIGINT, interrupt_handler);
 
     g = game_new();

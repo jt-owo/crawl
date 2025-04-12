@@ -8,13 +8,13 @@ Game* game_new(void)
 {
     Game* g = malloc(sizeof(Game));
     g->levels = g->current = level_new(NULL);
-    g->player = player_new(KNIGHT);
+    g->player = player_new("jt-owo", KNIGHT, HUMAN);
     g->player->base->sight = 5;
     player_move(g->player, g->current->stairsUp);
     level_fov(g->current, g->player->base, g->player->base->sight);
     cam_center(g->player->base->pos);
     player_status(g->player);
-    
+    gui_status("Welcome to CRAWL");
     g->state = MAP_WALK;
     g->running = TRUE;
     return g;
@@ -48,16 +48,14 @@ void game_run(Game* g)
         key = getch();
 
         if (key == KEY_F(12))
-        {
-            g->running = !gui_confirm("Do you want to quit?", 'y', 'n');
-            if (g->running)
-                gui_redraw(g);
-        }
+            gui_quit(g);
             
         if (key == '`')
             state = MAP_WALK;
         else if (key == 'l')
             state = CAM_MOVE;
+        else if (key == 'c')
+            state = CHARACTER_SCREEN;
         else if (key == 'i')
             state = INFO_SCREEN;
         else
@@ -85,6 +83,9 @@ void game_state(Game* g, enum GameState state)
         case CAM_MOVE:
             g_selector = g->player->base->pos;
             gui_redraw(g);
+            break;
+        case CHARACTER_SCREEN:
+            gui_draw_player_screen(g->player);
             break;
         case INFO_SCREEN:
             gui_draw_info(g);
@@ -244,12 +245,18 @@ void handle_input(Game* g, int key)
             if (key == '<')
             {
                 if (pteq(g->player->base->pos, g->current->stairsUp))
+                {
                     game_ascend(g);
+                    gui_status("You ascend up the stairs.");
+                }
             }
             else if (key == '>')
             {
                 if (pteq(g->player->base->pos, g->current->stairsDown))
+                {
                     game_descend(g);
+                    gui_status("You descend deeper...");
+                }
             }
             else if (key == 'w')
                 game_move(g, NORTH);
@@ -279,6 +286,8 @@ void handle_input(Game* g, int key)
                 cam_move_selector(g, EAST);
             else if (key == 'a')
                 cam_move_selector(g, WEST);
+            break;
+        case CHARACTER_SCREEN:
             break;
         case INFO_SCREEN:
             break;

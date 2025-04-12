@@ -41,18 +41,15 @@
 
 #define LIST_REMOVE(type, arr, n)                                       \
 {                                                                       \
-    type** tmp = calloc(arr->size - 1, sizeof(type));                   \
-                                                                        \
     if (n != 0)                                                         \
     {                                                                   \
-        memcpy(tmp, arr->data, n * sizeof(type));                       \
-        arr->data = tmp;                                                \
+        memmove(arr->data, arr->data, n * sizeof(type));                \
     }                                                                   \
                                                                         \
     if (n != (arr->size - 1))                                           \
     {                                                                   \
-        memcpy(tmp + n, arr->data + n + 1, (arr->size - n - 1) * sizeof(type)); \
-        arr->data = tmp;                                                \
+        memmove(arr->data + n, arr->data + n + 1, (arr->size - n - 1) * sizeof(type)); \
+        arr->size -= 1;                                                 \
     }                                                                   \
 }                                                                       \
 

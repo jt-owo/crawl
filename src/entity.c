@@ -4,7 +4,6 @@
 Entity* entity_new()
 {
     Entity* e = malloc(sizeof(Entity));
-
     return e;
 }
 

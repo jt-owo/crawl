@@ -12,6 +12,7 @@ typedef struct Entity
     enum Color      color;
     int             sight;
     int             xpValue;
+    int             mvcost;
 
     int             hp, baseHP;
     int             mp, baseMP;
@@ -19,6 +20,8 @@ typedef struct Entity
     int             tou, baseTOU;
     int             att, baseATT;
     int             def, baseDEF;
+    int             mag, baseMAG;
+    int             wil, baseWIL;
 } Entity;
 
 /* Creates a new entity and allocates the memory. */
